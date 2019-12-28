@@ -15,6 +15,11 @@ html {
   color: #222;
   font-size: 1em;
   line-height: 1.4;
+  height: 100%;
+}
+
+body {
+  height: 100%;
 }
 
 /*
@@ -97,6 +102,43 @@ textarea {
 /* ==========================================================================
    Author's custom styles
    ========================================================================== */
+.main-wrapper {
+  background-color: #222222;
+  color: white;
+  min-height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: 'Lato', sans-serif;
+  flex-direction: column;
+}
+
+.name {
+  font-size: 3em;
+  font-family: 'Libre Baskerville', serif;
+  text-align: center;
+  margin-bottom: 0.5em;
+}
+
+.btns a {
+  color: white;
+  display: inline-block;
+  border: 2px solid white;
+  padding: 1em 2em;
+  text-decoration: none;
+  width: 6em;
+  text-align: center;
+  margin: 1em;
+  transition: 0.2s all;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.btns a:hover {
+  background-color: white;
+  color: #222222;
+}
+
 
 /* ==========================================================================
    Helper classes
