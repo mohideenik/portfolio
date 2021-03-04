@@ -19,9 +19,13 @@
         Transcription Practice Tool
       </h1>
 
+      <p id="key"></p>
+
       <button class="btn btn-primary" id="next">Next</button>
       <button class="btn btn-primary" id="answer">Show Answer</button>
       <button class="btn btn-primary" id="repeat">Repeat</button>
+
+      <p id="anotes"></p>
 
       <h3>Credits</h3>
 
@@ -38,12 +42,32 @@
     <script src="howler.min.js"></script>
 
 <script>
-  let notes = ["C3", "D3", "E3", "F3", "G3", "A3", "B3", "C4", "D4", "E4", "F4", "G4", "A4", "B4", "C5"];
+  function rand(x, y) {
+    let diff = y - x + 1;
+    let rval = Math.random() * diff;
+    return Math.ceil(rval) + x - 1;
+  }
+
+  let keys = ["C major", "D major", "E major", "G major"];
+  let key_notes = {
+    "C major": ["C3", "D3", "E3", "F3", "G3", "A3", "B3", "C4", "D4", "E4", "F4", "G4", "A4", "B4", "C5"],
+    "D major": ["D3", "E3", "Gb3", "G3", "A3", "B3", "Db4", "D4", "E4", "Gb4", "G4", "A4", "B4", "Db5", "D5"],
+    "E major": ["E3", "Gb3", "Ab3", "A3", "B3", "Db4", "Eb4", "E4", "Gb4", "Ab4", "A4", "B4", "Db5", "Eb5", "E5"],
+    "G major": ["G2", "A2", "B2", "C3", "D3", "E3", "Ab3", "G3", "A3", "B3", "C4", "D4", "E4", "Ab4", "G4"],
+  }
+
+  let indian_notes = ["Sa", "Re", "Ga", "Ma", "Pa", "Da", "Ni", "Sa", "Re", "Ga", "Ma", "Pa", "Da", "Ni", "Sa"];
+  let western_notes = ["Do", "Re", "Mi", "Fa", "So", "La", "Ti", "Do", "Re", "Mi", "Fa", "So", "La", "Ti", "Do"];
+
+  let key = keys[rand(0, keys.length-1)];
+  let notes = key_notes[key];
   let sounds = [];
 
   var n = [];
 
   $(document).ready(function() {
+    $("#key").html("Playing in the key of " + key + ".");
+
     function load_notes() {
       if (sounds.length == 0) {
         for (note of notes) {
@@ -77,10 +101,11 @@
       n = [7];
 
       for (let i = 0; i < 4; i++) {
-        let x = 7 + Math.round(Math.random() * 3);
+        let x = rand(7, 10);
         n.push(x);
       }
 
+      $("#anotes").html("");
       play_notes(n, 0);
     });
 
@@ -90,14 +115,30 @@
 
     $("#answer").click(function() {
       var s = "";
-      console.log(n);
       for (y of n) {
         if (s != "")
           s = s + ", " + notes[y];
         else
           s = notes[y];
       }
-      alert(s);
+
+      var t = "";
+      for (y of n) {
+        if (t != "")
+          t = t + ", " + indian_notes[y];
+        else
+          t = indian_notes[y];
+      }
+
+      var u = "";
+      for (y of n) {
+        if (u != "")
+          u = u + ", " + western_notes[y];
+        else
+          u = western_notes[y];
+      }
+
+      $("#anotes").html("<h3>Answer</h3>" + t + "<br>" + u + "<br>" + s);
     });
   });
 </script>
