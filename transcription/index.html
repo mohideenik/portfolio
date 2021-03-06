@@ -27,6 +27,12 @@
 
       <p id="anotes"></p>
 
+      <h3>Frequency Analyser</h3>
+
+      <p>Current dominant frequency: <span id="fr"></span></p>
+
+      <button class="btn btn-primary" id="startfft">Start</button>
+
       <h3>Credits</h3>
 
       <p>Created by <a href="../">Mohideen Imran Khan</a>.</p>
@@ -64,6 +70,10 @@
   let sounds = [];
 
   var n = [];
+
+  var audioCtx;
+  var analyser;
+  var source;
 
   $(document).ready(function() {
     $("#key").html("Playing in the key of " + key + ".");
@@ -139,6 +149,55 @@
       }
 
       $("#anotes").html("<h3>Answer</h3>" + t + "<br>" + u + "<br>" + s);
+    });
+
+
+    $("#startfft").click(function() {
+      $("#startfft").prop('disabled', true);
+      $("#startfft").text('Started');
+
+      let sampleRate = 192000;
+      let opt = {
+        sampleRate
+      };
+
+      audioCtx = new (window.AudioContext || window.webkitAudioContext)(opt);
+      analyser = audioCtx.createAnalyser();
+
+      analyser.fftSize = 32768;
+
+      var f_prev;
+
+      navigator.mediaDevices.getUserMedia({audio: true})
+      .then(function(stream) {
+        /* use the stream */
+        console.log("Got audio")
+
+        source = audioCtx.createMediaStreamSource(stream);
+        source.connect(analyser);
+
+        var dataArray = new Float32Array(analyser.frequencyBinCount);
+
+        setInterval(() => {
+          analyser.getFloatFrequencyData(dataArray)
+
+          var mx_i = 0, mx = dataArray[0];
+          for (var i = 0; i < dataArray.length; i++) {
+            if (dataArray[i] > mx) {
+              mx_i = i;
+              mx = dataArray[i];
+            }
+          }
+
+          let freq = mx_i/dataArray.length * sampleRate / 2;
+
+          if (dataArray[mx_i] > -50 && Math.round(freq * 100) != Math.round(f_prev * 100)) {
+            $("#fr").text(Math.round(freq));
+            f_prev = freq;
+            console.log(freq, dataArray[mx_i]);
+          }
+        }, 100);
+      });
     });
   });
 </script>
